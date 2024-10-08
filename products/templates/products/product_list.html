@@ -1,16 +1,75 @@
-{% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
+<!-- CSS Styling (embedded for easy implementation) -->
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+    }
+    h2 {
+        color: #333;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .btn {
+        border-radius: 20px;
+    }
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .card-img-top {
+        border-radius: 15px 15px 0 0;
+        object-fit: cover;
+        height: 200px;
+    }
+    .alert {
+        border-radius: 10px;
+    }
+    .btn-group .btn {
+        width: 33.33%;
+        border-radius: 0;
+    }
+    /* Calculator styles */
+    #calculator {
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 300px;
+        margin-top: 20px;
+    }
+    #calculator input[type="text"] {
+        width: 100%;
+        height: 50px;
+        font-size: 1.5em;
+        text-align: right;
+        margin-bottom: 10px;
+        border-radius: 10px;
+    }
+    #calculator button {
+        width: 70px;
+        height: 70px;
+        font-size: 1.5em;
+        margin: 5px;
+        border-radius: 15px;
+    }
+</style>
+
+<!-- Main Content -->
 <div class="container mt-4">
+    <!-- Header and Add New Product Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Product Catalog</h2>
-        <a href="{% url 'product-create' %}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add New Product
+        <h2><i class="fas fa-box"></i> Product Catalog</h2>
+        <a href="{% url 'product-create' %}" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Add New Product
         </a>
     </div>
 
+    <!-- Alerts -->
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -20,9 +79,11 @@
         {% endfor %}
     {% endif %}
 
+    <!-- Low Stock Alerts -->
     {% if low_stock_products %}
     <div class="alert alert-warning" role="alert">
-        <h5>Low Stock Alert!</h5>
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Low Stock Alert!</strong>
         <ul class="mb-0">
             {% for product in low_stock_products %}
             <li>{{ product.name }} - Only {{ product.stock_quantity }} left</li>
@@ -31,6 +92,7 @@
     </div>
     {% endif %}
 
+    <!-- Product Cards -->
     <div class="row">
         {% for product in products %}
         <div class="col-md-4 mb-4">
@@ -44,7 +106,7 @@
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">
                         <strong>SKU:</strong> {{ product.sku }}<br>
-                        <strong>Price:</strong> ${{ product.price }}</br>
+                        <strong>Price:</strong> ${{ product.price }}<br>
                         <strong>Stock:</strong> {{ product.stock_quantity }}
                         {% if product.low_stock %}
                             <span class="badge bg-warning">Low Stock</span>
@@ -53,9 +115,15 @@
                 </div>
                 <div class="card-footer">
                     <div class="btn-group w-100">
-                        <a href="{% url 'product-detail' product.pk %}" class="btn btn-info">View</a>
-                        <a href="{% url 'product-update' product.pk %}" class="btn btn-primary">Edit</a>
-                        <a href="{% url 'product-delete' product.pk %}" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'product-detail' product.pk %}" class="btn btn-info">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <a href="{% url 'product-update' product.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'product-delete' product.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </a>
                     </div>
                 </div>
             </div>
@@ -63,10 +131,60 @@
         {% empty %}
         <div class="col-12">
             <div class="alert alert-info">
-                No products available. Click "Add New Product" to get started.
+                <i class="fas fa-info-circle"></i> No products available. Click "Add New Product" to get started.
             </div>
         </div>
         {% endfor %}
     </div>
+
+    <!-- Calculator Section -->
+    <div id="calculator" class="mt-4">
+        <input type="text" id="calc-display" readonly>
+        <div class="row">
+            <button onclick="appendToCalc('7')">7</button>
+            <button onclick="appendToCalc('8')">8</button>
+            <button onclick="appendToCalc('9')">9</button>
+            <button onclick="appendToCalc('/')">/</button>
+        </div>
+        <div class="row">
+            <button onclick="appendToCalc('4')">4</button>
+            <button onclick="appendToCalc('5')">5</button>
+            <button onclick="appendToCalc('6')">6</button>
+            <button onclick="appendToCalc('*')">*</button>
+        </div>
+        <div class="row">
+            <button onclick="appendToCalc('1')">1</button>
+            <button onclick="appendToCalc('2')">2</button>
+            <button onclick="appendToCalc('3')">3</button>
+            <button onclick="appendToCalc('-')">-</button>
+        </div>
+        <div class="row">
+            <button onclick="clearCalc()">C</button>
+            <button onclick="appendToCalc('0')">0</button>
+            <button onclick="calculate()">=</button>
+            <button onclick="appendToCalc('+')">+</button>
+        </div>
+    </div>
 </div>
+
+<!-- JavaScript for Calculator -->
+<script>
+    function appendToCalc(value) {
+        document.getElementById('calc-display').value += value;
+    }
+
+    function calculate() {
+        let expression = document.getElementById('calc-display').value;
+        try {
+            document.getElementById('calc-display').value = eval(expression);
+        } catch (error) {
+            document.getElementById('calc-display').value = 'Error';
+        }
+    }
+
+    function clearCalc() {
+        document.getElementById('calc-display').value = '';
+    }
+</script>
 {% endblock %}
+</html>
