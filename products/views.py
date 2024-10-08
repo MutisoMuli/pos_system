@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.db.models import F
 from .models import Product, Category
 from .forms import ProductForm, CategoryForm
+from django.dispatch import receiver
 
 
 class ProductListView(LoginRequiredMixin, ListView):
@@ -14,13 +15,14 @@ class ProductListView(LoginRequiredMixin, ListView):
     template_name = 'products/product_list.html'
     context_object_name = 'products'
     ordering = ['-created_at']
+    
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(request):
+        context={}
         context['low_stock_products'] = Product.objects.filter(
             stock_quantity__lte=F('minimum_stock')
         )
-        return context
+        return render(request, 'products/product_list.html', context)
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -28,11 +30,14 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     template_name = 'products/product_detail.html'
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView():#(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
-    template_name = 'products/product_form.html'
     success_url = reverse_lazy('product-list')
+
+    def form_page(request):
+        template_name = 'products/product_form.html'
+        return render(request,template_name)
 
     def form_valid(self, form):
         messages.success(self.request, 'Product created successfully!')
