@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Product Catalog</h2>
+        <a href="{% url 'product-create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Product
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if low_stock_products %}
+    <div class="alert alert-warning" role="alert">
+        <h5>Low Stock Alert!</h5>
+        <ul class="mb-0">
+            {% for product in low_stock_products %}
+            <li>{{ product.name }} - Only {{ product.stock_quantity }} left</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                    <img src="{% static 'images/no-image.png' %}" class="card-img-top" alt="No image available">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">
+                        <strong>SKU:</strong> {{ product.sku }}<br>
+                        <strong>Price:</strong> ${{ product.price }}</br>
+                        <strong>Stock:</strong> {{ product.stock_quantity }}
+                        {% if product.low_stock %}
+                            <span class="badge bg-warning">Low Stock</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group w-100">
+                        <a href="{% url 'product-detail' product.pk %}" class="btn btn-info">View</a>
+                        <a href="{% url 'product-update' product.pk %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'product-delete' product.pk %}" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No products available. Click "Add New Product" to get started.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
