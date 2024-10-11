@@ -1,0 +1,31 @@
+<!-- templates/products/product_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Products</h1>
+<a href="{% url 'product-create' %}" class="btn">New Product</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Group</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.group.name }}</td>
+            <td>
+                <a href="{% url 'product_update' product.id %}">Edit</a>
+                <a href="{% url 'product_delete' product.id %}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

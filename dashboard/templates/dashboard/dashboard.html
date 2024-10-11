@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block header %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Monthly Sales Chart -->
+    <div class="col-span-full bg-white rounded-lg shadow">
+        <div class="p-4 border-b">
+            <h3 class="text-lg font-semibold">Monthly Sales - 2024</h3>
+        </div>
+        <div class="p-4">
+            <canvas id="monthlySalesChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="p-4 border-b">
+            <h3 class="text-lg font-semibold">Top Products</h3>
+        </div>
+        <div class="p-4">
+            {% if top_products %}
+                <ul class="space-y-2">
+                    {% for product in top_products %}
+                    <li class="flex justify-between">
+                        <span>{{ product.name }}</span>
+                        <span class="font-semibold">{{ product.sales_count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-500">No data to display</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Hourly Sales -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="p-4 border-b">
+            <h3 class="text-lg font-semibold">Hourly Sales</h3>
+        </div>
+        <div class="p-4">
+            <canvas id="hourlySalesChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Total Sales Amount -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="p-4 border-b">
+            <h3 class="text-lg font-semibold">Total Sales (Amount)</h3>
+        </div>
+        <div class="p-4">
+            <div class="text-4xl font-bold text-center">
+                ${{ total_sales|default:"0.00" }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script>
+    // Add your Chart.js initialization code here
+</script>
+{% endblock %}
