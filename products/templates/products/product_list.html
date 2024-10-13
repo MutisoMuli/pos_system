@@ -1,45 +1,88 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="product-management">
-    <h1>Products</h1>
-    <div class="toolbar">
-        <button class="btn new-group">New group</button>
-        <button class="btn new-product">New product</button>
-        <button class="btn refresh">Refresh</button>
+
+<div class="product-management mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-2xl font-bold mb-6">Products</h1>
+
+    <div class="toolbar mb-6 flex flex-wrap gap-2">
+        <button class="btn bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Refresh
+        </button>
+        <button class="btn bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            New group
+        </button>
+        <button class="btn bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            New product
+        </button>
+        <button class="btn bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            Import
+        </button>
+        <button class="btn bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            Export
+        </button>
+        <button class="btn bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            Print
+        </button>
+        <button class="btn bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+            Save as PDF
+        </button>
+        <button class="btn bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 flex items-center">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+            Price tags
+        </button>
     </div>
 
     {% if products %}
-    <table class="product-table">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Group</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-            <tr>
-                <td>{{ product.name }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.group.name }}</td>
-                <td>
-                    <a href="{% url 'product_update' product.id %}" class="edit-btn">Edit</a>
-                    <a href="{% url 'product_delete' product.id %}" class="delete-btn">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left text-gray-500">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" class="py-3 px-6">Product Name</th>
+                    <th scope="col" class="py-3 px-6">Price</th>
+                    <th scope="col" class="py-3 px-6">Group</th>
+                    <th scope="col" class="py-3 px-6">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr class="bg-white border-b">
+                    <td class="py-4 px-6">{{ product.name }}</td>
+                    <td class="py-4 px-6">{{ product.price }}</td>
+                    <td class="py-4 px-6">{{ product.group.name }}</td>
+                    <td class="py-4 px-6 flex space-x-2">
+                        <a href="{% url 'product_update' product.id %}" class="text-indigo-600 hover:text-indigo-900">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        </a>
+                        <a href="{% url 'product_delete' product.id %}" class="text-red-600 hover:text-red-900">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
-    <div class="empty-state">
-        <img src="path-to-eye-icon.svg" alt="No products" />
-        <p>Selected group contains no products</p>
-        <a href="{% url 'product-create' %}" class="btn">Add new product</a> or 
-        <a href="#" class="btn">Create new product group</a>
+    <div class="empty-state text-center mt-10">
+        <img src="/api/placeholder/96/96" alt="No products" class="mx-auto mb-4 w-24 h-24">
+        <p class="text-xl font-semibold mb-4">Selected group contains no products</p>
+        <div class="space-x-4">
+            <a href="{% url 'product-create' %}" class="btn bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                Add new product
+            </a>
+            <a href="#" class="btn bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                Create new product group
+            </a>
+        </div>
     </div>
     {% endif %}
 </div>
+
 {% endblock %}
