@@ -84,18 +84,18 @@ A comprehensive Point of Sale system built with Django, featuring inventory mana
 
 5. **Run migrations**
    ```bash
-   python manage.py makemigrations
-   python manage.py migrate
+   python3 manage.py makemigrations
+   python3 manage.py migrate
    ```
 
 6. **Create superuser**
    ```bash
-   python manage.py createsuperuser
+   python3 manage.py createsuperuser
    ```
 
 7. **Start development server**
    ```bash
-   python manage.py runserver
+   python3 manage.py runserver
    ```
 
 ## 🏗️ Project Structure
