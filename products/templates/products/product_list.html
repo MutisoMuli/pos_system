@@ -1,31 +1,45 @@
-<!-- templates/products/product_list.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Products</h1>
-<a href="{% url 'product-create' %}" class="btn">New Product</a>
+<div class="product-management">
+    <h1>Products</h1>
+    <div class="toolbar">
+        <button class="btn new-group">New group</button>
+        <button class="btn new-product">New product</button>
+        <button class="btn refresh">Refresh</button>
+    </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Group</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for product in products %}
-        <tr>
-            <td>{{ product.name }}</td>
-            <td>{{ product.price }}</td>
-            <td>{{ product.group.name }}</td>
-            <td>
-                <a href="{% url 'product_update' product.id %}">Edit</a>
-                <a href="{% url 'product_delete' product.id %}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    {% if products %}
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Group</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.group.name }}</td>
+                <td>
+                    <a href="{% url 'product_update' product.id %}" class="edit-btn">Edit</a>
+                    <a href="{% url 'product_delete' product.id %}" class="delete-btn">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <img src="path-to-eye-icon.svg" alt="No products" />
+        <p>Selected group contains no products</p>
+        <a href="{% url 'product-create' %}" class="btn">Add new product</a> or 
+        <a href="#" class="btn">Create new product group</a>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
