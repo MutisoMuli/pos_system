@@ -20,6 +20,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'products',
     'dashboard',
 ]
@@ -53,6 +55,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pos_system.wsgi.application'
+
+# Crispy Forms Configuration
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Database
 DATABASES = {

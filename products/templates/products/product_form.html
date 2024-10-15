@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}New Product{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/new_product.css' %}">
+{% endblock %}
+
+{% block header %}New Product{% endblock %}
+
+{% block content %}
+<div class="new-product-container bg-gray-800 text-white rounded-lg shadow-lg">
+    <h1 class="new-product-title text-2xl font-bold mb-6">New product <span class="arrow-icon">→</span></h1>
+    
+    <div class="tabs mb-6">
+        <button class="tab-button">Print stations</button>
+        <button class="tab-button">Comments</button>
+        <button class="tab-button">Image & color</button>
+        <button class="tab-button active">Details</button>
+        <button class="tab-button">Price & tax</button>
+        <button class="tab-button">Stock control</button>
+    </div>
+    
+    <form class="new-product-form" method="post">
+        {% csrf_token %}
+        <div class="form-group mb-4">
+            <label for="name" class="block mb-2">Name</label>
+            <input type="text" id="name" name="name" class="form-control w-full bg-gray-700 text-white px-3 py-2 rounded">
+        </div>
+        
+        <div class="form-group mb-4">
+            <label for="code" class="block mb-2">Code</label>
+            <input type="text" id="code" name="code" value="1" class="form-control w-full bg-gray-700 text-white px-3 py-2 rounded">
+        </div>
+        
+        <div class="form-group mb-4">
+            <label for="barcode" class="block mb-2">Barcode</label>
+            <input type="text" id="barcode" name="barcode" class="form-control w-full bg-gray-700 text-white px-3 py-2 rounded">
+            <a href="#" class="generate-barcode text-blue-400 text-sm mt-1 inline-block">Generate barcode</a>
+        </div>
+        
+        <div class="form-group mb-4">
+            <label for="unit" class="block mb-2">Unit of measurement</label>
+            <input type="text" id="unit" name="unit" class="form-control w-full bg-gray-700 text-white px-3 py-2 rounded">
+        </div>
+        
+        <div class="form-group mb-4">
+            <label for="group" class="block mb-2">Group</label>
+            <select id="group" name="group" class="form-control w-full bg-gray-700 text-white px-3 py-2 rounded">
+                <option>Products</option>
+            </select>
+        </div>
+        
+        <div class="form-group checkbox-group mb-4">
+            <label class="switch">
+                <input type="checkbox" name="active" checked>
+                <span class="slider"></span>
+            </label>
+            <span class="ml-2">Active</span>
+        </div>
+        
+        <div class="form-group checkbox-group mb-4">
+            <label class="switch">
+                <input type="checkbox" name="default_quantity" checked>
+                <span class="slider"></span>
+            </label>
+            <span class="ml-2">Default quantity</span>
+        </div>
+        
+        <div class="form-group checkbox-group mb-4">
+            <label class="switch">
+                <input type="checkbox" name="service">
+                <span class="slider"></span>
+            </label>
+            <span class="ml-2">Service (not using stock)</span>
+        </div>
+        
+        <div class="form-actions mt-6">
+            <button type="submit" class="btn btn-primary bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+            <button type="button" class="btn btn-secondary bg-gray-600 text-white px-4 py-2 rounded ml-2">Cancel</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
