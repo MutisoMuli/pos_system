@@ -1,39 +1,48 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <div class="flex flex-col h-screen">
     <div class="bg-gray-100 p-4 flex justify-between">
-        <a href="{% url 'product-create' %}" class="btn bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-            Add new product
-        </a>
-        <a href="#" class="btn bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
-            Create new product group
-        </a>
+        <a href="{% url 'product-create' %}" class="btn bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Add new product</a>
+        <a href="#" class="btn bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">Create new product group</a>
     </div>
+
     <div class="flex flex-grow">
         <div class="w-64 bg-gray-200 p-4">
             <h3 class="font-bold text-lg mb-2">Product Groups</h3>
-            <!-- Add your product groups here -->
+            <!-- Add product group list here -->
         </div>
+
         <div class="flex-grow p-4">
             {% if products %}
-                <div class="product-list">
-                    <ul>
-                        {% for product in products %}
-                            <li class="product-item">
-                                <h4>{{ product.name }}</h4>  <!-- Display product name -->
-                                <p>{{ product.description }}</p>  <!-- Display product description -->
-                                <p>Price: ${{ product.price }}</p>  <!-- Display product price -->
-                            </li>
-                        {% endfor %}
-                    </ul>
+            <div class="product-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for product in products %}
+                <div class="product-card bg-white p-4 rounded shadow">
+                    <h4 class="font-bold text-lg mb-2">{{ product.name }}</h4>
+                    <p class="text-gray-600 mb-2">{{ product.description }}</p>
+                    <p>Category: {{ product.category.name }}</p>
+                    <p>Buying Price: ${{ product.buying_price }}</p>
+                    <p>Selling Price: ${{ product.selling_price }}</p>
+                    <p>Quantity: {{ product.stock_quantity }}</p>
+                    <p>Code: {{ product.code }}</p>
+                    <p>Barcode: {{ product.barcode }}</p>
+                    <p>Unit: {{ product.unit }}</p>
+                    <p>Active: {% if product.active %}Yes{% else %}No{% endif %}</p>
+                    <p>Default Quantity: {% if product.default_quantity %}Yes{% else %}No{% endif %}</p>
+                    <p>Is Service: {% if product.is_service %}Yes{% else %}No{% endif %}</p>
                 </div>
+                {% endfor %}
+            </div>
             {% else %}
-                <div class="empty-state text-center mt-10">
-                    <img src="/api/placeholder/96/96" alt="No products" class="mx-auto mb-4 w-24 h-24">
-                    <p class="text-xl font-semibold mb-4">Selected group contains no products</p>
-                </div>
+            <div class="empty-state text-center mt-10">
+                <svg width="96" height="96" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM11 17h2v-2h-2v2zm0-4h2V7h-2v6z" fill="#B0BEC5"/>
+                </svg>
+                <p>Selected group contains no products</p>
+            </div>
             {% endif %}
         </div>
     </div>
 </div>
+
 {% endblock %}
