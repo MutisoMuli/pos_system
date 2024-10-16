@@ -1,4 +1,6 @@
-#!/home/mutiso/pos_system/pos_env/bin/python3
+#!/bin/sh
+'''exec' "/mnt/d/Anto/Holberton School of Engineering/pos_system/pos_env/bin/python3" "$0" "$@"
+' '''
 # -*- coding: utf-8 -*-
 import re
 import sys

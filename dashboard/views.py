@@ -15,7 +15,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         # Add dashboard data to context (excluding order items)
         context.update({
             # Get the top 5 products by stock quantity for now (you can change this to any other metric)
-            'top_products': Product.objects.order_by('-stock_quantity')[:5],
+            'top_products': Product.objects.order_by('-selling_price')[:5],
             
             # Since we are removing total sales, you can remove this or add a placeholder
             'total_sales': 0.00,

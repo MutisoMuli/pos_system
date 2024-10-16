@@ -1,10 +1,10 @@
 from django import forms
-from .models import Product, Category, ProductCategory
+from .models import Product, Category
 
 class ProductForm(forms.ModelForm):
     new_category = forms.CharField(
-        max_length=100, 
-        required=False, 
+        max_length=100,
+        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         help_text="Enter a new category if not in the list"
     )
@@ -12,25 +12,18 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = [
-            'name', 'sku', 'barcode', 'category', 'description', 
-            'buying_price', 'selling_price', 'stock_quantity', 
-            'minimum_stock', 'variant_type', 'image', 'active', 
-            'default_quantity', 'is_service', 'unit'
+            'name', 'sku', 'category', 'description',
+            'buying_price', 'selling_price', 'active', 
+            'is_service', 'unit'
         ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'sku': forms.TextInput(attrs={'class': 'form-control'}),
-            'barcode': forms.TextInput(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'buying_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'selling_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'stock_quantity': forms.NumberInput(attrs={'class': 'form-control'}),
-            'minimum_stock': forms.NumberInput(attrs={'class': 'form-control'}),
-            'variant_type': forms.Select(attrs={'class': 'form-control'}),
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'default_quantity': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'is_service': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'unit': forms.TextInput(attrs={'class': 'form-control'}),
         }

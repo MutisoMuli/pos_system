@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/mnt/c/Users/Administrator/Desktop/Alx Studies/pos_system-main/pos_env"
+VIRTUAL_ENV="/mnt/d/Anto/Holberton School of Engineering/pos_system/pos_env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
