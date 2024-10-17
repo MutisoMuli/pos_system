@@ -10,7 +10,8 @@ SECRET_KEY = 'django-insecure-8z%r6crsi3w0$zrz3!+oy&w(l*69b^28p@-@37xlu=*u708#g1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS=['https://localhost:8000']
+ALLOWED_HOSTS = ["localhost",'https://localhost:8000']
 
 # Application definition
 INSTALLED_APPS = [
@@ -24,6 +25,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'products',
     'dashboard',
+    'product'
 ]
 
 MIDDLEWARE = [
