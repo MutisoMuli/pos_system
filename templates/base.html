@@ -1,48 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}POS System{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    {% block extra_css %}{% endblock %}
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'sales' %}">POS System</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'sales' %}">Sales</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'dashboard' %}">Management</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+{% load static %}
 
-    <div class="container mt-4">
-        {% block content %}{% endblock %}
+<div class="flex h-screen">
+  <!-- Sidebar -->
+  <div class="w-64 bg-gray-800 text-white flex-shrink-0">
+    <div class="p-4">
+      <h1 class="text-xl font-bold">POS System</h1>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
-</body>
-</html>
+    <!-- Navigation Links -->
+    <ul>
+      <li>
+        <a href="{% url 'dashboard' %}" class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'product-list' %}" class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 10v10M4 7v10l8 4m0-10l8-4m-8 10L4 7" />
+          </svg>
+          Products
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Header -->
+    <div class="bg-white shadow">
+      <div class="px-4 py-3">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-gray-800">{% block header %}{% endblock %}</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+      <div class="container mx-auto px-6 py-8">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Additional JavaScript -->
+{% block extra_js %}{% endblock %}
