@@ -4,9 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from dashboard.views import DashboardView
+from sales.views import SalesView
 
 urlpatterns = [
-    path('', DashboardView.as_view(), name='dashboard'),
+    path('', SalesView.as_view(), name='sales'),
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('admin/', admin.site.urls),
     path('products/', include('product.urls')),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

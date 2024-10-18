@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}Sales{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Product list for sales -->
+    <div class="md:col-span-2">
+        <h2 class="text-2xl font-semibold mb-4">Products</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for product in products %}
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-lg font-semibold">{{ product.name }}</h3>
+                <p class="text-gray-600">Price: ${{ product.selling_price }}</p>
+                <p class="text-gray-600">Stock: {{ product.stock_quantity }}</p>
+                <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded add-to-cart" data-product-id="{{ product.id }}">
+                    Add to Cart
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Shopping cart -->
+    <div class="bg-white rounded-lg shadow-md p-4">
+        <h2 class="text-2xl font-semibold mb-4">Shopping Cart</h2>
+        <ul id="shopping-cart" class="space-y-2">
+            <!-- Cart items will be added here dynamically -->
+        </ul>
+        <div class="mt-4">
+            <h4 class="text-xl font-semibold">Total: $<span id="cart-total">0.00</span></h4>
+            <button id="checkout-button" class="mt-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+                Checkout
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cart = {};
+        const cartList = document.getElementById('shopping-cart');
+        const cartTotal = document.getElementById('cart-total');
+
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+                const productCard = this.closest('.bg-white');
+                const productName = productCard.querySelector('h3').textContent;
+                const productPrice = parseFloat(productCard.querySelector('p').textContent.split('$')[1]);
+
+                if (cart[productId]) {
+                    cart[productId].quantity += 1;
+                } else {
+                    cart[productId] = { name: productName, price: productPrice, quantity: 1 };
+                }
+
+                updateCart();
+            });
+        });
+
+        function updateCart() {
+            cartList.innerHTML = '';
+            let total = 0;
+
+            for (const [id, item] of Object.entries(cart)) {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center';
+                li.innerHTML = `
+                    <span>${item.name} - $${item.price} x ${item.quantity}</span>
+                    <button class="text-red-500 hover:text-red-600" onclick="removeFromCart('${id}')">Remove</button>
+                `;
+                cartList.appendChild(li);
+
+                total += item.price * item.quantity;
+            }
+
+            cartTotal.textContent = total.toFixed(2);
+        }
+
+        window.removeFromCart = function(productId) {
+            delete cart[productId];
+            updateCart();
+        }
+
+        document.getElementById('checkout-button').addEventListener('click', function() {
+            // Implement checkout logic here
+            alert('Checkout functionality to be implemented');
+        });
+    });
+</script>
+{% endblock %}
