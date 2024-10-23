@@ -24,3 +24,9 @@ def product_create(request):
         form = ProductForm()
     
     return render(request, 'product_form.html', {'form': form})
+
+def product_list(request):
+    return render(request, 'product_list.html', {
+        'products': Product.objects.all(),
+        'categories': Category.objects.all(),
+    })

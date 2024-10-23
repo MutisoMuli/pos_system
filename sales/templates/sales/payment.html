@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}Sales{% endblock %}
+
+{% block content %}
+<!-- Previous content remains the same until shopping cart section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Product list section remains unchanged -->
+    <div class="md:col-span-2">
+        <!-- Previous product list content -->
+    </div>
+
+    <!-- Modified shopping cart with payment methods -->
+    <div class="bg-white rounded-lg shadow-md p-4">
+        <h2 class="text-2xl font-semibold mb-4">Shopping Cart</h2>
+        <ul id="shopping-cart" class="space-y-2 mb-4">
+            <!-- Cart items will be added here dynamically -->
+        </ul>
+        <div class="mt-4">
+            <h4 class="text-xl font-semibold">Total: $<span id="cart-total">0.00</span></h4>
+            
+            <!-- Payment Method Selection -->
+            <div id="payment-section" class="mt-4 hidden">
+                <h4 class="font-semibold mb-2">Select Payment Method</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="payment-method" value="mpesa" class="form-radio">
+                        <span>M-Pesa</span>
+                    </label>
+                    <label class="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="payment-method" value="mastercard" class="form-radio">
+                        <span>Mastercard</span>
+                    </label>
+                    <label class="flex items-center space-x-2 p-2 border rounded cursor-pointer hover:bg-gray-50">
+                        <input type="radio" name="payment-method" value="cash" class="form-radio">
+                        <span>Cash</span>
+                    </label>
+                </div>
+
+                <!-- Payment Forms -->
+                <div id="payment-forms" class="mt-4">
+                    <!-- M-Pesa Form -->
+                    <form id="mpesa-form" class="payment-form hidden">
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                <input type="tel" name="phone" placeholder="254XXXXXXXXX" 
+                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+                                Pay with M-Pesa
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Mastercard Form -->
+                    <form id="mastercard-form" class="payment-form hidden">
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Card Number</label>
+                                <input type="text" name="card-number" placeholder="XXXX XXXX XXXX XXXX" 
+                                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
+                                    <input type="text" name="expiry" placeholder="MM/YY" 
+                                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">CVV</label>
+                                    <input type="text" name="cvv" placeholder="XXX" 
+                                           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+                                Pay with Mastercard
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Cash Form -->
+                    <form id="cash-form" class="payment-form hidden">
+                        <div class="p-4 bg-gray-50 rounded">
+                            <p class="text-gray-700 mb-4">Please proceed to the counter with your order number to make the payment.</p>
+                            <button type="submit" class="w-full bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600">
+                                Generate Order Slip
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <button id="checkout-button" 
+                    class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Previous cart and product functionality remains the same
+    
+    // Payment related elements
+    const checkoutButton = document.getElementById('checkout-button');
+    const paymentSection = document.getElementById('payment-section');
+    const paymentForms = document.querySelectorAll('.payment-form');
+    const paymentMethods = document.querySelectorAll('input[name="payment-method"]');
+
+    // Show payment methods when checkout button is clicked
+    checkoutButton.addEventListener('click', function() {
+        if (Object.keys(cart).length === 0) {
+            alert('Your cart is empty');
+            return;
+        }
+        
+        this.classList.add('hidden');
+        paymentSection.classList.remove('hidden');
+    });
+
+    // Handle payment method selection
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+            // Hide all payment forms
+            paymentForms.forEach(form => form.classList.add('hidden'));
+            // Show selected payment form
+            document.getElementById(`${this.value}-form`).classList.remove('hidden');
+        });
+    });
+
+    // Handle M-Pesa payment
+    document.getElementById('mpesa-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const phoneNumber = this.querySelector('input[name="phone"]').value;
+        
+        try {
+            // Here you would integrate with your M-Pesa API
+            const response = await initiateSTKPush({
+                phoneNumber,
+                amount: parseFloat(cartTotal.textContent),
+                orderId: generateOrderId()
+            });
+            
+            // Handle the response
+            if (response.success) {
+                alert('Please check your phone for the M-Pesa prompt');
+            } else {
+                alert('Payment failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            alert('Payment failed. Please try again.');
+        }
+    });
+
+    // Handle Mastercard payment
+    document.getElementById('mastercard-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = {
+            cardNumber: this.querySelector('input[name="card-number"]').value,
+            expiry: this.querySelector('input[name="expiry"]').value,
+            cvv: this.querySelector('input[name="cvv"]').value,
+            amount: parseFloat(cartTotal.textContent)
+        };
+
+        try {
+            // Here you would integrate with your card payment processor
+            const response = await processCardPayment(formData);
+            
+            if (response.success) {
+                alert('Payment successful!');
+                clearCart();
+            } else {
+                alert('Payment failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            alert('Payment failed. Please try again.');
+        }
+    });
+
+    // Handle cash payment
+    document.getElementById('cash-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const orderId = generateOrderId();
+        
+        // Generate and show order slip
+        const orderSlip = generateOrderSlip(orderId, cart, parseFloat(cartTotal.textContent));
+        alert(`Order #${orderId} has been generated. Please proceed to the counter for payment.`);
+        // You might want to print the order slip or show it in a modal
+        console.log(orderSlip);
+    });
+
+    // Utility functions
+    function generateOrderId() {
+        return 'ORD' + Date.now().toString().slice(-6);
+    }
+
+    function clearCart() {
+        cart = {};
+        updateCart();
+        paymentSection.classList.add('hidden');
+        checkoutButton.classList.remove('hidden');
+    }
+
+    function generateOrderSlip(orderId, cart, total) {
+        return {
+            orderId,
+            items: Object.entries(cart).map(([id, item]) => ({
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity
+            })),
+            total,
+            timestamp: new Date().toISOString()
+        };
+    }
+
+    // These functions would need to be implemented based on your payment processor
+    async function initiateSTKPush(data) {
+        // Implement M-Pesa STK Push API call
+        return { success: true }; // Placeholder
+    }
+
+    async function processCardPayment(data) {
+        // Implement card payment processing
+        return { success: true }; // Placeholder
+    }
+});
+</script>
+{% endblock %}
