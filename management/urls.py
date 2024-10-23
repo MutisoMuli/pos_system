@@ -4,6 +4,8 @@ from .views import management_home
 
 urlpatterns = [
     path('', management_home, name='management'),
-    path('product/', include('product.urls')),      # Include product app URLs
-    path('dashboard/', include('dashboard.urls')),  # Include dashboard app URLs
+    path('product/', include('product.urls')),      
+    path('dashboard/', include('dashboard.urls')),
+    path('inventory/', include('inventory.urls')),
+    
 ]
