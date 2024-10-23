@@ -41,23 +41,28 @@
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-700">
-                        <a href="#" class="flex items-center">
+                        <a href="#" onclick="fetchSalesHistory()" class="flex items-center">
                             <span class="mr-2">📜</span> View sales history
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-700">
-                        <a href="#" class="flex items-center">
+                        <a href="#" onclick="fetchOpenSales()" class="flex items-center">
                             <span class="mr-2">📦</span> View open sales
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-700">
-                        <a href="#" class="flex items-center">
+                        <a href="#" onclick="fetchCashInOut()" class="flex items-center">
                             <span class="mr-2">💵</span> Cash In / Out
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-700">
-                        <a href="#" class="flex items-center">
+                        <a href="#" onclick="fetchEndOfDay()" class="flex items-center">
                             <span class="mr-2">⏱</span> End of day
+                        </a>
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-700">
+                        <a href="#" onclick="fetchFeedbackAnalysis()" class="flex items-center">
+                            <span class="mr-2">📣</span> Feedback
                         </a>
                     </li>
                     <hr class="border-gray-600">
@@ -71,15 +76,12 @@
                             <span class="mr-2">🔓</span> Sign out
                         </a>
                     </li>
-                    <li class="px-4 py-2 hover:bg-gray-700">
-                        <a href="#" class="flex items-center">
-                            <span class="mr-2">📣</span> Feedback
-                        </a>
-                    </li>
                 </ul>
             </nav>
         </div>
     </div>
+
+    <div id="result" class="p-4 mt-4 bg-white rounded shadow"></div>
 
     <script>
         const sidebar = document.getElementById('sidebar');
@@ -99,6 +101,41 @@
         sidebar.addEventListener('mouseleave', () => {
             sidebar.classList.add('translate-x-full');
         });
+
+        // Fetch sales history data
+        async function fetchSalesHistory() {
+            const response = await fetch('/ai/view-sales-history/');
+            const data = await response.json();
+            document.getElementById('result').innerHTML = `<h3>Sales History Summary:</h3><p>${data.summary}</p>`;
+        }
+
+        // Fetch open sales data
+        async function fetchOpenSales() {
+            const response = await fetch('/ai/view-open-sales/');
+            const data = await response.json();
+            document.getElementById('result').innerHTML = `<h3>Open Sales Report:</h3><p>${data.report}</p>`;
+        }
+
+        // Fetch cash in / out data
+        async function fetchCashInOut() {
+            const response = await fetch('/ai/cash-in-out/');
+            const data = await response.json();
+            document.getElementById('result').innerHTML = `<h3>Cash In / Out Analysis:</h3><p>${data.analysis}</p>`;
+        }
+
+        // Fetch end-of-day data
+        async function fetchEndOfDay() {
+            const response = await fetch('/ai/end-of-day/');
+            const data = await response.json();
+            document.getElementById('result').innerHTML = `<h3>End of Day Summary:</h3><p>${data.summary}</p>`;
+        }
+
+        // Fetch feedback analysis data
+        async function fetchFeedbackAnalysis() {
+            const response = await fetch('/ai/feedback-analysis/');
+            const data = await response.json();
+            document.getElementById('result').innerHTML = `<h3>Feedback Insights:</h3><p>${data.insights}</p>`;
+        }
     </script>
 
     {% block extra_js %}{% endblock %}
