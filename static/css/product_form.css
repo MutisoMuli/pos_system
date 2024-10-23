@@ -1,0 +1,24 @@
+#sidebar {
+    height: 100vh;
+    position: fixed;
+}
+
+.sidebar .nav-link {
+    color: #fff;
+}
+
+.sidebar .nav-link.active {
+    color: #007bff;
+}
+
+main {
+    margin-left: 16.67%; /* Adjusts for the fixed sidebar */
+}
+
+.form-switch {
+    padding-left: 2.5em;
+}
+
+.form-check-input {
+    margin-left: -2.5em;
+}

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}POS System{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Main Content -->
+        <div class="flex-1 overflow-hidden">
+            <header class="bg-white shadow">
+                <div class="px-4 py-3 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-gray-800">{% block header %}{% endblock %}</h2>
+                    <button id="sidebar-toggle" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                        Menu
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+
+        <!-- Popover Sidebar -->
+        <div id="sidebar" class="w-64 bg-gray-800 text-white fixed top-0 right-0 h-screen transform translate-x-full transition-transform">
+            <div class="p-4">
+                <h1 class="text-xl font-bold">Menu</h1>
+            </div>
+            <nav class="mt-4">
+                <ul>
+                    <li class="px-4 py-2 hover:bg-gray-700">
+                        <a href="{% url 'management' %}" class="flex items-center">
+                            <span class="mr-2">⚙️</span> Management
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleButton = document.getElementById('sidebar-toggle');
+
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('translate-x-full');
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
