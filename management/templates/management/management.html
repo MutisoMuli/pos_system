@@ -14,7 +14,6 @@
         <div class="w-64 bg-gray-800 text-white flex-shrink-0">
             <div class="p-4">
                 <h1 class="text-xl font-bold">POS System</h1>
-                <!-- Link to Sales Page -->
                 <a href="{% url 'sales' %}" class="text-blue-400 hover:text-blue-600">
                     Go to Sales Page
                 </a>
@@ -23,26 +22,72 @@
                 <ul>
                     <li class="px-4 py-2 hover:bg-gray-700">
                         <a href="{% url 'dashboard' %}" class="flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 12h18M3 6h18M3 18h18"></path>
                             </svg>
                             Dashboard
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-700">
                         <a href="{% url 'product-list' %}" class="flex items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                <path d="M2 10h20"></path>
                             </svg>
                             Products
                         </a>
                     </li>
                     <li class="px-4 py-2 hover:bg-gray-700">
-                        <a href="{% url 'product-list' %}" class="flex items-center"> <!-- have just linked product_list because inventory is not working-->
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        <a href="{% url 'product-list' %}" class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 6H4l8 13L20 6z"></path>
                             </svg>
                             Inventory
+                        </a>
+                    </li>
+                    <!-- Updated Icons -->
+                    <li class="px-4 py-2 hover:bg-gray-700">
+                        <a href="#" class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="8" r="4"></circle>
+                                <path d="M16 16v2a4 4 0 01-8 0v-2"></path>
+                            </svg>
+                            Customers & Suppliers
+                        </a>
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-700">
+                        <a href="#" class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 21C6.48 21 2 16.52 2 12s4.48-9 10-9 10 4.48 10 9-4.48 9-10 9z"></path>
+                                <path d="M12 17l-3-3 3-3 3 3-3 3z"></path>
+                            </svg>
+                            Promotions & Actions
+                        </a>
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-700">
+                        <a href="#" class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 17V8m0-4h.01"></path>
+                                <path d="M9 17v2a4 4 0 008 0v-2"></path>
+                            </svg>
+                            Users & Security
+                        </a>
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-700">
+                        <a href="#" class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 4h6l2 12H7L9 4z"></path>
+                            </svg>
+                            Print Stations
+                        </a>
+                    </li>
+                    <li class="px-4 py-2 hover:bg-gray-700">
+                        <a href="#" class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                                <path d="M7 10h10"></path>
+                            </svg>
+                            Payment Types
                         </a>
                     </li>
                 </ul>
