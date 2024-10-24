@@ -54,6 +54,11 @@
         color: white;
     }
 
+    .btn-refresh, .btn-sort {
+        background-color: #6c757d;
+        color: white;
+    }
+
     .btn-danger {
         background-color: #dc3545;
         color: white;
@@ -116,6 +121,13 @@
     .products-container {
         overflow-x: auto;
     }
+
+    .import-export-group {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
 </style>
 
 <div class="header-container">
@@ -126,6 +138,7 @@
             <i class="plus-icon">+</i>
             New Product
         </a>
+        
     
         {% if selected_category %}
             <button class="btn btn-primary" onclick="editCategory({{ selected_category }})">
@@ -137,8 +150,39 @@
                 Delete Category
             </button>
         {% endif %}
+        <!-- New Refresh Button -->
+        <button class="btn btn-refresh" onclick="refreshPage()">
+            <i class="refresh-icon">🔄</i>
+            Refresh
+        </button>
+
+        <!-- New Sort Button -->
+        <button class="btn btn-sort" onclick="sortProducts()">
+            <i class="sort-icon">⬇️</i>
+            Sort by Price
+        </button>
+
+        <!-- Import and Export Buttons in a Group -->
+        <div class="import-export-group">
+            <button class="btn btn-success" onclick="document.getElementById('fileInput').click()">
+                <i class="down-arrow">⬇️</i> Import
+            </button>
+
+            <input type="file" id="fileInput" style="display: none;" accept=".csv, .xlsx" 
+                onchange="document.getElementById('importForm').submit()">
+
+             <form id="importForm" action="{% url 'import-products' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="file" id="fileInput" style="display: none;" />
+            </form>
+
+            <a href="{% url 'export-products' %}" class="btn btn-info">
+                <i class="up-arrow">⬆️</i> Export
+            </a>
+        </div>
     </div>
 </div>
+
 
 <div class="main-container">
     <!-- Left sidebar for categories -->
@@ -213,6 +257,29 @@
             return;
         }
         window.location.href = `{% url 'category-edit' 1 %}`.replace('1', categoryId);
+    }
+
+    // Refresh Page Function
+    function refreshPage() {
+        location.reload(); // Reloads the page to get updated content
+    }
+
+    // Sort Products Function
+    function sortProducts() {
+        const rows = document.querySelectorAll('.products-table tbody tr');
+        const rowsArray = Array.from(rows);
+
+        // Sort the rows based on the selling price (numeric sort)
+        rowsArray.sort((rowA, rowB) => {
+            const priceA = parseFloat(rowA.cells[2].textContent.trim());
+            const priceB = parseFloat(rowB.cells[2].textContent.trim());
+            return priceA - priceB; // Ascending order
+        });
+
+        // Remove current rows and append sorted rows
+        const tbody = document.querySelector('.products-table tbody');
+        tbody.innerHTML = ''; // Clear current rows
+        rowsArray.forEach(row => tbody.appendChild(row)); // Append sorted rows
     }
 </script>
 
