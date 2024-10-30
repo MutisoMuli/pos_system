@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block header %}Sales{% endblock %}
+{% block header %}
+CASHIER
+{% endblock %}
 
 {% block content %}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -36,57 +38,140 @@
                  data-name="{{ product.name|lower }}" 
                  data-price="{{ product.selling_price }}">
                 <h3 class="text-lg font-semibold">{{ product.name }}</h3>
-                <p class="text-gray-600">Price: ${{ product.selling_price }}</p>
+                <p class="text-gray-600">Price: Ksh {{ product.selling_price }}</p>
                 <p class="text-gray-600">Stock: {{ product.stock_quantity }}</p>
                 <button class="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded add-to-cart" 
-                        data-product-id="{{ product.id }}">
+                        data-product-id="{{ product.id }}"
+                        data-product-name="{{ product.name }}"
+                        data-product-price="{{ product.selling_price }}">
                     Add to Cart
                 </button>
             </div>
             {% endfor %}
         </div>
 
-        <!-- No results message -->
         <div id="noResults" class="hidden text-center py-8 text-gray-500">
             No products found matching your search.
         </div>
 
-        <!-- Initial message -->
         <div id="initialMessage" class="text-center py-8 text-gray-500">
             Type in the search box to display products
         </div>
     </div>
 
-    <!-- Shopping cart section remains the same -->
+    <!-- Shopping Cart Section -->
     <div class="bg-white rounded-lg shadow-md p-4">
         <h2 class="text-2xl font-semibold mb-4">Shopping Cart</h2>
-        <ul id="shopping-cart" class="space-y-2">
-            <!-- Cart items will be added here dynamically -->
-        </ul>
-        <div class="mt-4">
-            <h4 class="text-xl font-semibold">Total: $<span id="cart-total">0.00</span></h4>
-            <button id="checkout-button" 
-                    class="mt-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full">
-                Checkout
+        
+        <!-- Cart Items -->
+        <div class="max-h-96 overflow-y-auto mb-4">
+            <ul id="shopping-cart" class="space-y-2">
+                <!-- Cart items will be added here dynamically -->
+            </ul>
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="border-t pt-4">
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span>Subtotal:</span>
+                    <span id="total-amount">Ksh 0.00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>VAT (16%):</span>
+                    <span id="vat-amount">Ksh 0.00</span>
+                </div>
+                <div class="flex justify-between font-bold">
+                    <span>Total:</span>
+                    <span id="cart-total">Ksh 0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="mt-6">
+            <h3 class="font-semibold mb-2">Payment Details</h3>
+            
+            <!-- Payment Method Selection -->
+            <div class="mb-4">
+                <label class="block text-sm mb-1">Payment Method</label>
+                <select id="payment-method" class="w-full p-2 border rounded">
+                    <option value="">Select payment method</option>
+                    <option value="cash">Cash</option>
+                    <option value="mpesa">M-Pesa</option>
+                </select>
+            </div>
+
+            <!-- Cash Payment Fields -->
+            <div id="cash-fields" class="hidden space-y-2">
+                <div>
+                    <label class="block text-sm mb-1">Amount Received</label>
+                    <input type="number" id="cash-amount" class="w-full p-2 border rounded" placeholder="Enter amount">
+                </div>
+                <div>
+                    <label class="block text-sm mb-1">Change</label>
+                    <input type="text" id="change-amount" class="w-full p-2 border rounded" readonly>
+                </div>
+            </div>
+
+            <!-- M-Pesa Fields -->
+            <div id="mpesa-fields" class="hidden space-y-2">
+                <div>
+                    <label class="block text-sm mb-1">Phone Number</label>
+                    <input type="tel" id="phone-number" class="w-full p-2 border rounded" placeholder="Enter M-Pesa number">
+                </div>
+                <div id="mpesa-status" class="text-sm"></div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-6 space-y-2">
+            <button id="process-payment" 
+                    class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded disabled:bg-gray-400"
+                    disabled>
+                Process Payment
+            </button>
+            <button id="print-receipt" 
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded hidden">
+                Print Receipt
+            </button>
+            <button id="new-sale" 
+                    class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded hidden">
+                New Sale
             </button>
         </div>
+
+        <div id="result" class="p-4 mt-4 bg-white rounded shadow"></div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Cart functionality
+    // Initialize variables
     const cart = {};
+    let saleInProgress = true;
+    let receiptNumber = 1000; // Starting receipt number
+
+    // DOM Elements
     const cartList = document.getElementById('shopping-cart');
     const cartTotal = document.getElementById('cart-total');
+    const totalAmount = document.getElementById('total-amount');
+    const vatAmount = document.getElementById('vat-amount');
     const searchInput = document.getElementById('searchInput');
     const sortSelect = document.getElementById('sortSelect');
     const productsGrid = document.getElementById('productsGrid');
     const noResults = document.getElementById('noResults');
     const initialMessage = document.getElementById('initialMessage');
+    const paymentMethodSelect = document.getElementById('payment-method');
+    const cashFields = document.getElementById('cash-fields');
+    const mpesaFields = document.getElementById('mpesa-fields');
+    const processPaymentBtn = document.getElementById('process-payment');
+    const printReceiptBtn = document.getElementById('print-receipt');
+    const newSaleBtn = document.getElementById('new-sale');
+    const cashAmount = document.getElementById('cash-amount');
+    const changeAmount = document.getElementById('change-amount');
 
     // Search and sort functionality
     function filterAndSortProducts() {
@@ -94,17 +179,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const sortMethod = sortSelect.value;
         const productCards = Array.from(document.querySelectorAll('.product-card'));
 
-        // Hide initial message if there's a search term
         initialMessage.style.display = searchTerm ? 'none' : 'block';
 
-        // If no search term, hide all products and show initial message
         if (!searchTerm) {
             productCards.forEach(card => card.classList.add('hidden'));
             noResults.classList.add('hidden');
             return;
         }
 
-        // Filter products
         let visibleCards = productCards.filter(card => {
             const productName = card.getAttribute('data-name');
             const shouldShow = productName.includes(searchTerm);
@@ -112,10 +194,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return shouldShow;
         });
 
-        // Show/hide no results message
         noResults.classList.toggle('hidden', visibleCards.length > 0);
 
-        // Sort visible cards
         visibleCards.sort((a, b) => {
             const nameA = a.getAttribute('data-name');
             const nameB = b.getAttribute('data-name');
@@ -136,7 +216,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Reorder in DOM
         visibleCards.forEach(card => productsGrid.appendChild(card));
     }
 
@@ -144,51 +223,162 @@ document.addEventListener('DOMContentLoaded', function() {
     searchInput.addEventListener('input', filterAndSortProducts);
     sortSelect.addEventListener('change', filterAndSortProducts);
 
-    // Cart functionality remains the same
+    // Add to Cart Event Listeners
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function() {
+            if (!saleInProgress) return;
+            
             const productId = this.dataset.productId;
-            const productCard = this.closest('.product-card');
-            const productName = productCard.querySelector('h3').textContent;
-            const productPrice = parseFloat(productCard.querySelector('p').textContent.split('$')[1]);
+            const productName = this.dataset.productName;
+            const productPrice = parseFloat(this.dataset.productPrice);
 
             if (cart[productId]) {
                 cart[productId].quantity += 1;
             } else {
-                cart[productId] = { name: productName, price: productPrice, quantity: 1 };
+                cart[productId] = {
+                    name: productName,
+                    price: productPrice,
+                    quantity: 1
+                };
             }
-
             updateCart();
         });
     });
 
+    // Cart Update Function
     function updateCart() {
+        if (!saleInProgress) return;
+
         cartList.innerHTML = '';
-        let total = 0;
+        let subtotal = 0;
 
         for (const [id, item] of Object.entries(cart)) {
             const li = document.createElement('li');
             li.className = 'flex justify-between items-center';
             li.innerHTML = `
-                <span>${item.name} - $${item.price} x ${item.quantity}</span>
-                <button class="text-red-500 hover:text-red-600" onclick="removeFromCart('${id}')">Remove</button>
+                <div>
+                    <span class="font-medium">${item.name}</span>
+                    <br>
+                    <span class="text-sm">Ksh ${item.price} × ${item.quantity}</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="font-medium">Ksh ${(item.price * item.quantity).toFixed(2)}</span>
+                    <button class="text-red-500 hover:text-red-600" onclick="removeFromCart('${id}')">×</button>
+                </div>
             `;
             cartList.appendChild(li);
-
-            total += item.price * item.quantity;
+            subtotal += item.price * item.quantity;
         }
 
-        cartTotal.textContent = total.toFixed(2);
+        const vat = subtotal * 0.16;
+        const total = subtotal + vat;
+
+        totalAmount.textContent = `Ksh ${subtotal.toFixed(2)}`;
+        vatAmount.textContent = `Ksh ${vat.toFixed(2)}`;
+        cartTotal.textContent = `Ksh ${total.toFixed(2)}`;
+
+        processPaymentBtn.disabled = Object.keys(cart).length === 0 || !paymentMethodSelect.value;
     }
 
+    // Remove from Cart Function
     window.removeFromCart = function(productId) {
+        if (!saleInProgress) return;
         delete cart[productId];
         updateCart();
+    };
+
+    // Payment Method Handling
+    paymentMethodSelect.addEventListener('change', function() {
+        const method = this.value;
+        cashFields.classList.toggle('hidden', method !== 'cash');
+        mpesaFields.classList.toggle('hidden', method !== 'mpesa');
+        processPaymentBtn.disabled = !method || Object.keys(cart).length === 0;
+    });
+
+    // Cash Amount Input Handling
+    cashAmount.addEventListener('input', function() {
+        if (!saleInProgress) return;
+        const total = parseFloat(cartTotal.textContent.replace('Ksh ', ''));
+        const received = parseFloat(this.value) || 0;
+        const change = received - total;
+        changeAmount.value = change >= 0 ? `Ksh ${change.toFixed(2)}` : '';
+        processPaymentBtn.disabled = change < 0 || !this.value;
+    });
+
+    // Process Payment Button
+    processPaymentBtn.addEventListener('click', function() {
+        const paymentMethod = paymentMethodSelect.value;
+        if (paymentMethod === 'cash') {
+            finalizeSale('cash');
+        } else if (paymentMethod === 'mpesa') {
+            processMpesaPayment();
+        }
+    });
+
+    // M-Pesa Payment Processing
+    function processMpesaPayment() {
+        const phoneNumber = document.getElementById('phone-number').value;
+        const status = document.getElementById('mpesa-status');
+        
+        status.textContent = 'Processing M-Pesa payment...';
+        status.className = 'text-blue-500';
+        
+        setTimeout(() => {
+            status.textContent = 'Payment successful!';
+            status.className = 'text-green-500';
+            finalizeSale('mpesa');
+        }, 2000);
     }
 
-    document.getElementById('checkout-button').addEventListener('click', function() {
-        // Implement checkout logic here
-        alert('Checkout functionality to be implemented');
+    // Finalize Sale Function
+    function finalizeSale(paymentMethod) {
+        saleInProgress = false;
+        processPaymentBtn.classList.add('hidden');
+        printReceiptBtn.classList.remove('hidden');
+        newSaleBtn.classList.remove('hidden');
+        
+        // Disable inputs
+        paymentMethodSelect.disabled = true;
+        cashAmount.disabled = true;
+        
+        // Print receipt
+        printReceipt(paymentMethod);
+    }
+
+    // Print Receipt Function
+    function printReceipt(paymentMethod) {
+        const receiptWindow = window.open('', '_blank');
+        const date = new Date().toLocaleDateString();
+        const time = new Date().toLocaleTimeString();
+        
+        let receiptHTML = `
+            <div style="font-family: monospace; max-width: 300px; margin: 0 auto; padding: 20px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2>STORE NAME</h2>
+                    <p>Receipt #${receiptNumber}</p>
+                    <p>${date} ${time}</p>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <th style="text-align: left;">Item</th>
+                            <th style="text-align: right;">Qty</th>
+                            <th style="text-align: right;">Price</th>
+                            <th style="text-align: right;">Total</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        `;
+        
+        receiptWindow.document.write(receiptHTML);
+        receiptWindow.document.close();
+        receiptWindow.print();
+    }
+
+    // New Sale Button
+    newSaleBtn.addEventListener('click', function() {
+        location.reload();
     });
 });
 </script>
